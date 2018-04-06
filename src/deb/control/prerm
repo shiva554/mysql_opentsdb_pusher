@@ -1,0 +1,13 @@
+#!/bin/bash
+
+SERVICENAME=cox-pnh-opentsdb-service
+
+_prerm_main() {
+        echo "Runs before removing package"
+	# Good for stopping the process before removing the files
+	systemctl stop $SERVICENAME.service
+	
+	exit 0
+}
+
+_prerm_main

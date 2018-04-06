@@ -1,0 +1,6 @@
+# running a user script via cronjob and logging the output
+*/5 * * * *   root   /usr/bin/cox-pnh-brix_tsdb-puller-script.sh 2>&1 | /usr/bin/logger -t cox-pnh-brix_tsdb-puller-script
+*/5 * * * *     root   /usr/bin/cox-pnh-brix_tsdb-push-script.sh 2>&1 | /usr/bin/logger -t cox-pnh-brix_tsdb-push-script
+
+
+

@@ -1,0 +1,33 @@
+#!/bin/bash
+
+SERVICENAME=cox-pnh-opentsdb-service
+
+
+
+_postinst_enable_systemd(){
+	systemctl enable $SERVICENAME.service
+	
+}
+
+_postinst_dosomething(){
+	echo "Doing some post installation work here"
+	chmod 755 /usr/bin/cox-pnh-brix_tsdb-puller-script.sh
+	chmod 755 /usr/bin/cox-pnh-brix_tsdb-push-script.sh
+	chmod 755 /var/log/cox-pnh-brix_tsdb-service.log
+	dos2unix /usr/bin/cox-pnh-brix_tsdb-puller-script.sh
+	dos2unix /usr/bin/cox-pnh-brix_tsdb-push-script.sh
+	dos2unix /etc/cron.d/cox-pnh-brix_tsdb-script
+	
+	
+}
+
+_postinst_main() {
+	_postinst_dosomething
+	#_postinst_enable_systemd
+	echo "Installation completed"
+	#systemctl start $SERVICENAME.service
+	
+	
+}
+
+_postinst_main

@@ -1,0 +1,12 @@
+#!/bin/bash
+_preinst_main() {
+        mkdir -p /usr/share/cox/pnh/jars
+        mkdir -p /etc/cox/pnh/cox-pnh-opentsdb-service
+        touch /var/log/cox-pnh-brix_tsdb-service.log
+        echo "Runs before installing package"
+	# Good for stopping processes before installing and checking dependencies
+	# systemctl start|stop service > /dev/null 2>&1
+	exit 0
+}
+
+_preinst_main

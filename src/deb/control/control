@@ -1,0 +1,8 @@
+Package: [[artifactId]]
+Version: [[version]]
+Depends: python
+Section: sweng
+Architecture: all
+Priority: required
+Maintainer: Shiva Lokasani <shiva.lokasani@cox.com>
+Description: Contains [[artifactId]]

@@ -1,0 +1,8 @@
+#!/bin/bash
+_postrm_main() {
+        echo "Runs after removing package"
+	# Good to remove directories that were not removed with the installation
+	exit 0
+}
+
+_postrm_main

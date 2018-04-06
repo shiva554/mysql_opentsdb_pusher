@@ -1,0 +1,8 @@
+/var/log/cox-pnh-tsdb-service.log {
+   rotate 7
+   weekly
+   missingok
+   notifempty
+   compress
+   copytruncate
+}

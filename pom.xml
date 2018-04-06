@@ -1,0 +1,240 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.cox.sweng</groupId>
+	<artifactId>cox-pnh-tsdb-mysql-service</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>cox-pnh-tsdb-mysql-service</name>
+	<description>Java client for fetching files from brix and pushing to mysql/opentsdb</description>
+	<url>http://opentsdb.org</url>
+
+        <properties>
+                <java-version>1.8</java-version>
+                <project-config-root>/usr/share/cox/pnh/jars</project-config-root>
+                <project-jar-root>/usr/share/cox/pnh/jars</project-jar-root>
+                <project-war-root>/usr/share/cox/pnh/jars</project-war-root>
+                <log4j-version>1.2.17</log4j-version>
+		<commons-lang-version>2.5</commons-lang-version>
+		<commons-logging-version>1.1.1</commons-logging-version>
+        </properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>14.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<version>1.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		
+</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>1.9.5</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+		
+		<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<!-- Run shade goal on package phase -->
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								add Main-Class to manifest file
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>com.cox.sweng.clienttest.ClientTest</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>  
+                        <!-- <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-compiler-plugin</artifactId>
+                                <version>2.5.1</version>
+                                <configuration>
+                                <archive>
+					<manifest>
+					    
+						<mainClass>com.cox.sweng.clienttest.opentsdbClientTest</mainClass>
+					</manifest>
+				</archive>
+                                        <source>${java-version}</source>
+                                        <target>${java-version}</target>
+                                </configuration>
+                        </plugin> -->
+                        <plugin>
+				<artifactId>jdeb</artifactId>
+				<groupId>org.vafer</groupId>
+				<version>0.11</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jdeb</goal>
+						</goals>
+						<configuration>
+							<deb>${debian.package}</deb>
+							<dataSet>
+								<data>
+								 <!--	<src>${project.build.directory}/${project.build.finalName}.jar</src> -->
+									<src>${project.build.directory}/${project.build.finalName}.jar</src>
+									<type>file</type>
+									<mapper>
+										<type>perm</type>
+										<prefix>${project-jar-root}</prefix>
+									</mapper>
+								</data>
+								<data>
+									<src>src/deb/cfg/config.properties</src>
+									<type>file</type>
+									<!-- <includes>*.properties</includes>
+									<excludes>.svn</excludes> -->
+									<mapper>
+										<type>perm</type>
+										<prefix>/etc/cox/pnh/cox-pnh-tsdb-mysql-service</prefix>
+									</mapper>
+								</data>
+								<data>
+									<src>src/deb/files/usr/bin/cox-pnh-brix_tsdb-puller-script.sh</src>
+									<type>file</type>
+									<includes>*.sh</includes>
+								<!-- 	<excludes>.svn</excludes> -->
+									<mapper>
+										 <type>perm</type>
+										<prefix>/usr/bin</prefix> 
+									</mapper>
+								</data>
+								<data>
+									<src>src/deb/files/usr/bin/cox-pnh-brix_tsdb-push-script.sh</src>
+									<type>file</type>
+									 <includes>*.sh</includes>
+								<!--	<excludes>.svn</excludes> -->
+									<mapper>
+										 <type>perm</type>
+										<prefix>/usr/bin</prefix> 
+									</mapper>
+								</data>
+								<data>
+									<src>src/deb/files/etc/cron.d/cox-pnh-brix_tsdb-script</src>
+									<type>file</type>
+									 <includes>*.sh</includes>
+									<!--<excludes>.svn</excludes> -->
+									<mapper>
+										<type>perm</type>
+										<prefix>/etc/cron.d</prefix>
+									</mapper>
+								</data>
+							</dataSet>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+                       
+                        <!--<plugin>
+                                <artifactId>jdeb</artifactId>
+                                <groupId>org.vafer</groupId>
+                                <version>0.11</version>
+                                <executions>
+                                        <execution>
+                                                <phase>package</phase>
+                                                <goals>
+                                                        <goal>jdeb</goal>
+                                                </goals>
+                                                <configuration>
+                                                        <deb>${debian.package}</deb>
+                                                        <dataSet>
+                                                                <data>
+                                                                        <src>${project.build.directory}/${project.build.finalName}.jar</src>
+                                                                        <type>file</type>
+                                                                        <mapper>
+                                                                                <type>perm</type>
+                                                                                <prefix>${project-jar-root}</prefix>
+                                                                        </mapper>
+                                                                </data>
+                                                                <data>
+                                                                        <src>src/deb/cfg/</src>
+                                                                        <type>directory</type>
+                                                                        <includes>*.properties</includes>
+                                                                        <excludes>.svn</excludes>
+                                                                        <mapper>
+                                                                                <type>perm</type>
+                                                                                <prefix>${project-config-root}/${project.artifactId}</prefix>
+                                                                        </mapper>
+                                                                </data>
+                                                        </dataSet>
+                                                </configuration>
+                                        </execution>
+                                </executions>
+                        </plugin>-->
+		</plugins>
+	</build>
+</project>
